@@ -97,6 +97,18 @@ async def main():
             }
         )
 
+        w_m_id = await server.add_channel(
+            {
+                "topic": "w_m",
+                "encoding": "protobuf",
+                "schemaName": Vector3.DESCRIPTOR.full_name,
+                "schema": b64encode(
+                    build_file_descriptor_set(Vector3).SerializeToString()
+                ).decode("ascii"),
+                "schemaEncoding": "protobuf",
+            }
+        )
+
         a_m_id = await server.add_channel(
             {
                 "topic": "a_m",
@@ -157,6 +169,18 @@ async def main():
             }
         )
 
+        ag_id = await server.add_channel(
+            {
+                "topic": "ag",
+                "encoding": "protobuf",
+                "schemaName": Vector3.DESCRIPTOR.full_name,
+                "schema": b64encode(
+                    build_file_descriptor_set(Vector3).SerializeToString()
+                ).decode("ascii"),
+                "schemaEncoding": "protobuf",
+            }
+        )
+
         i = 0
         while True:
             i += 1
@@ -178,6 +202,11 @@ async def main():
             v.x = payload.v[0]
             v.y = payload.v[1]
             v.z = payload.v[2]
+
+            w_m = Vector3()
+            w_m.x = payload.w_m[0]
+            w_m.y = payload.w_m[1]
+            w_m.z = payload.w_m[2]
 
 
             now = time.time_ns()
@@ -226,6 +255,10 @@ async def main():
             fa.y = payload.fa[1]
             fa.z = payload.fa[2]
 
+            ag = Vector3()
+            ag.x = payload.ag[0]
+            ag.y = payload.ag[1]
+            ag.z = payload.ag[2]
             # await server.send_message(is_stance_id, now, bool_message.SerializeToString())
 
             # root transforms because foxglove assert
@@ -245,10 +278,12 @@ async def main():
                 server.send_message(tfs_id, now, tfs.SerializeToString()),
                 server.send_message(worldview_id, now, scene_update.SerializeToString()),
                 server.send_message(a_m_id, now, a_m.SerializeToString()),
+                server.send_message(w_m_id, now, w_m.SerializeToString()),
                 server.send_message(a_w_id, now, a_w.SerializeToString()),
                 server.send_message(a_b_id, now, a_b.SerializeToString()),
                 server.send_message(fa_id, now, fa.SerializeToString()),
                 server.send_message(v_id, now, v.SerializeToString()),
+                server.send_message(ag_id, now, ag.SerializeToString()),
                 server.send_message(is_stance_id, now, bool_message.SerializeToString())
             )
 

@@ -8,16 +8,18 @@ class Payload:
     stance: bool
     p: tuple[float, float, float]
     v: tuple[float, float, float]
+    w_m: tuple[float, float, float]
     a_m: tuple[float, float, float]
     a_b: tuple[float, float, float]
     a_w: tuple[float, float, float]
     q: tuple[float, float, float, float]
+    ag: tuple[float, float, float]  # Added new vector field ag
     fa: tuple[float,float,float]
 
 
 HEADER = b'\xA5\x5A'
 HEADER_SIZE = 2
-DATA_SHAPE = "<?3f3f3f3f3f4f3f"
+DATA_SHAPE = "<?3f3f3f3f3f3f4f3f3f"
 PACKET_SIZE = HEADER_SIZE + struct.calcsize(DATA_SHAPE)
 
 
@@ -51,11 +53,13 @@ class AsyncSerialReader:
                 stance=unpacked_data[0],
                 p=unpacked_data[1:4],
                 v=unpacked_data[4:7],
-                a_m=unpacked_data[7:10],
-                a_b=unpacked_data[10:13],
-                a_w=unpacked_data[13:16],
-                q=unpacked_data[16:20],
-                fa=unpacked_data[20:23]
+                w_m=unpacked_data[7:10],  # Added w_m
+                a_m=unpacked_data[10:13],
+                a_b=unpacked_data[13:16],
+                a_w=unpacked_data[16:19],
+                q=unpacked_data[19:23],
+                ag=unpacked_data[23:26],  # Added new field 'ag'
+                fa=unpacked_data[26:29]
             )
 
             return payload
